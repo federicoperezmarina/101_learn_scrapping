@@ -17,12 +17,13 @@ mongodb_user = os.getenv('MONGODB_USER')
 mongodb_password = os.getenv('MONGODB_PASSWORD')
 mongodb_host = os.getenv('MONGODB_HOST')
 mongodb_database = os.getenv('MONGODB_DATABASE')
+mongodb_collection = os.getenv('MONGODB_COLLECTION')
 
 # MongoDB connection with authentication
 mongo_uri = f"mongodb+srv://{mongodb_user}:{mongodb_password}@{mongodb_host}"
 client = MongoClient(mongo_uri)
 db = client[mongodb_database]
-collection = db['mongodb_user_groups']
+collection = db[mongodb_collection]
 
 urls = [
     'https://www.meetup.com/auckland-mongodb-meetup-group/',
@@ -156,7 +157,7 @@ for url in urls:
     print(description);
 
     document = {
-        'today': today,
+        'date': today,
         'scraped_at': datetime.now(),
         'name': h1,
         'members': members,
@@ -172,7 +173,7 @@ for url in urls:
     # Define the filter for upsert
     filter_doc = {
         'name': h1,
-        'today': today
+        'date': today
     }
 
     result = collection.update_one(
