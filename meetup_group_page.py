@@ -70,7 +70,8 @@ urls = [
     'https://www.meetup.com/montreal-mongodb-user-group/',
     'https://www.meetup.com/toronto-mongodb-usergroup/',
     'https://www.meetup.com/seattle-mongodb-user-group/',
-    'https://www.meetup.com/vanmug/'
+    'https://www.meetup.com/vanmug/',
+    'https://www.meetup.com/santa-catarina-florianopolis-mongodb-user-group/'
      ]
 
 headers = {
