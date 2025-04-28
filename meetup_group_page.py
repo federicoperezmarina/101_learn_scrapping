@@ -1,3 +1,4 @@
+import json
 import requests
 from bs4 import BeautifulSoup
 import re
@@ -12,6 +13,19 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+# Load URLs from JSON file
+def load_urls(file_path='urls.json'):
+    try:
+        with open(file_path, 'r') as file:
+            data = json.load(file)
+            return data.get('urls', [])
+    except FileNotFoundError:
+        print(f"Error: {file_path} not found")
+        return []
+    except json.JSONDecodeError:
+        print(f"Error: Invalid JSON in {file_path}")
+        return []
+
 # Get MongoDB credentials from environment variables
 mongodb_user = os.getenv('MONGODB_USER')
 mongodb_password = os.getenv('MONGODB_PASSWORD')
@@ -25,54 +39,7 @@ client = MongoClient(mongo_uri)
 db = client[mongodb_database]
 collection = db[mongodb_collection]
 
-urls = [
-    'https://www.meetup.com/auckland-mongodb-meetup-group/',
-    'https://www.meetup.com/barcelona-mongodb-user-group/',
-    'https://www.meetup.com/madrid-database-professionals-meetup-group/',
-    'https://www.meetup.com/seville-mongodb-meetup-group/',
-    'https://www.meetup.com/paris-mongodb-user-group/',
-    'https://www.meetup.com/northern-england-mongodb-user-group/',
-    'https://www.meetup.com/london-mug/',
-    'https://www.meetup.com/dublin-mongodb-user-group/',
-    'https://www.meetup.com/milano-mongodb-user-group/',
-    'https://www.meetup.com/zurich-mongodb-user-group/',
-    'https://www.meetup.com/belgrade-mongodb-user-group/',
-    'https://www.meetup.com/mugmunich/',
-    'https://www.meetup.com/frankfurt-mongodb-user-group/',
-    'https://www.meetup.com/belgium-mongodb-user-group/',
-    'https://www.meetup.com/amsterdam-mongodb-user-group/',
-    'https://www.meetup.com/mongodb-user-group-berlin/',
-    'https://www.meetup.com/helsinki-mongodb-user-group/',
-    'https://www.meetup.com/stockholm-mongodb-user-group/',
-    'https://www.meetup.com/israel-mongodb-user-group/',
-    'https://www.meetup.com/meetup-group-miwqboat/',
-    'https://www.meetup.com/kuala-lumpur-mongodb-user-group/',
-    'https://www.meetup.com/mug-sg/',
-    'https://www.meetup.com/jakarta-mongodb-user-group/',
-    'https://www.meetup.com/brisbane-mongodb-user-group/',
-    'https://www.meetup.com/sydney-mongodb-user-group/',
-    'https://www.meetup.com/canberra-mongodb-user-group',
-    'https://www.meetup.com/mongodb-melb/',
-    'https://www.meetup.com/wellington-mongodb-user-group/',
-    'https://www.meetup.com/christchurch-mongodb-user-group/',
-    'https://www.meetup.com/sao-paulo-mongodb-user-group/',
-    'https://www.meetup.com/mexico-mongodb-user-group/',
-    'https://www.meetup.com/la-mug',
-    'https://www.meetup.com/sv-mug/',
-    'https://www.meetup.com/sanfrancisco-mongodb-user-group/',
-    'https://www.meetup.com/colorado-mongodb-user-group/',
-    'https://www.meetup.com/austin-mongodb-usergroup/',
-    'https://www.meetup.com/dallas-mongodb-meetup-group/',
-    'https://www.meetup.com/chicago-mongodb-usergroup/',
-    'https://www.meetup.com/mongodb-user-group-detroit/',
-    'https://www.meetup.com/new-york-mongodb-user-group/',
-    'https://www.meetup.com/boston-mongodb-usergroup',
-    'https://www.meetup.com/montreal-mongodb-user-group/',
-    'https://www.meetup.com/toronto-mongodb-usergroup/',
-    'https://www.meetup.com/seattle-mongodb-user-group/',
-    'https://www.meetup.com/vanmug/',
-    'https://www.meetup.com/santa-catarina-florianopolis-mongodb-user-group/'
-     ]
+
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
@@ -82,6 +49,9 @@ headers = {
     'Connection': 'keep-alive',
     'Cache-Control': 'max-age=0'
 }
+
+# Load URLs from file
+urls = load_urls()
 
 for url in urls:
 
@@ -166,7 +136,8 @@ for url in urls:
         'state': state,
         'country': country,
         'url_img': url_img,
-        'description': description
+        'description': description,
+        'url':url
     }
 
     print(document)
